@@ -1,0 +1,76 @@
+
+import React, { createContext, useState, useEffect } from 'react';
+import { jwtDecode } from 'jwt-decode';
+import axios from 'axios';
+import { API_BASE_URL } from '../constants';
+
+const AuthContext = createContext();
+
+export const AuthProvider = ({ children }) => {
+  const [user, setUser] = useState(null);
+  const [token, setToken] = useState(() => {
+    const storedToken = localStorage.getItem('token');
+    if (storedToken) {
+      try {
+        // Validate token structure on initial load
+        jwtDecode(storedToken);
+        return storedToken;
+      } catch (err) {
+        console.error('Invalid stored token on load:', err);
+        localStorage.removeItem('token');
+        return null;
+      }
+    }
+    return null;
+  });
+
+  useEffect(() => {
+    if (token) {
+      try {
+        const decoded = jwtDecode(token);
+        const userData = { id: decoded._id, name: decoded.name, role: decoded.role };
+        setUser(userData);
+        axios.defaults.headers.common['x-auth-token'] = token;
+      } catch (err) {
+        console.error('Failed to decode token:', err);
+        logout(); // Clear invalid token
+      }
+    }
+  }, [token]);
+
+  const login = async (email, password) => {
+    try {
+      const res = await axios.post(`${API_BASE_URL}/auth/login`, { email, password });
+      const token = res.data.token;
+      try {
+        const decoded = jwtDecode(token);
+        const userData = { id: decoded._id, name: decoded.name, role: decoded.role };
+        localStorage.setItem('token', token);
+        setToken(token);
+        setUser(userData);
+        return userData.role;
+      } catch (decodeErr) {
+        console.error('Failed to decode new token:', decodeErr);
+        throw new Error('Invalid token received from server');
+      }
+    } catch (err) {
+      console.error(err);
+      throw err;
+    }
+  };
+
+  const logout = () => {
+    localStorage.removeItem('token');
+    setToken(null);
+    setUser(null);
+    delete axios.defaults.headers.common['x-auth-token'];
+  };
+
+  return (
+    <AuthContext.Provider value={{ user, token, login, logout }}>
+      {children}
+    </AuthContext.Provider>
+  );
+};
+
+export const useAuth = () => React.useContext(AuthContext);
