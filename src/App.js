@@ -5,7 +5,7 @@ import AdminPanel from './components/AdminPanel';
 import ResidentDashboard from './components/ResidentDashboard';
 import VisitDetails from './components/VisitDetails';
 import ProtectedRoute from './components/ProtectedRoute';
-import Home from './components/Home';
+import SecurityHome from './components/SecurityHome';
 import { useAuth } from './contexts/AuthContext';
 
 function App() {
@@ -43,8 +43,22 @@ function App() {
             </ProtectedRoute>
           }
         />
-        <Route path="/" element={user ? (user.role === 'admin' ? <Navigate to="/admin" /> : user.role === 'resident' ? <Navigate to="/dashboard" /> : <div><h2>Welcome, Security User</h2><p>You can access visit details by opening QR links (e.g., /visit/:id).</p></div>) : <Navigate to="/login" />} />
-        
+        <Route
+          path="/"
+          element={
+            user ? (
+              user.role === "admin" ? (
+                <Navigate to="/admin" />
+              ) : user.role === "resident" ? (
+                <Navigate to="/dashboard" />
+              ) : (
+                <SecurityHome />
+              )
+            ) : (
+              <Navigate to="/login" />
+            )
+          }
+        />
       </Routes>
     </Router>
   );

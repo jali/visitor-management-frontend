@@ -1,7 +1,7 @@
 import React from 'react';
 import { useAuth } from '../contexts/AuthContext';
 
-const Home = () => {
+const SecurityHome = () => {
   const { user } = useAuth();
 
   if (!user) {
@@ -28,4 +28,4 @@ const Home = () => {
   );
 };
 
-export default Home;
+export default SecurityHome;
