@@ -62,6 +62,7 @@ const ResidentDashboard = () => {
       const res = await axios.post(`${API_BASE_URL}/visit`, formData, {
         headers: { 'x-auth-token': token }
       });
+      console.log('received data: ', res.data)
       const url = res.data.url;
       setQrUrl(url);
       

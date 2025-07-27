@@ -23,6 +23,7 @@ export const AuthProvider = ({ children }) => {
     }
     return null;
   });
+  const [loading, setLoading] = useState(true); // Added loading state
 
   useEffect(() => {
     if (token) {
@@ -36,6 +37,7 @@ export const AuthProvider = ({ children }) => {
         logout(); // Clear invalid token
       }
     }
+    setLoading(false); // Set loading false after processing
   }, [token]);
 
   const login = async (email, password) => {

@@ -5,10 +5,15 @@ import AdminPanel from './components/AdminPanel';
 import ResidentDashboard from './components/ResidentDashboard';
 import VisitDetails from './components/VisitDetails';
 import ProtectedRoute from './components/ProtectedRoute';
+import Home from './components/Home';
 import { useAuth } from './contexts/AuthContext';
 
 function App() {
-  const { user } = useAuth();
+  const { user, loading } = useAuth();
+
+  if (loading) {
+    return <div>Loading...</div>; // Prevent render until auth is ready
+  }
 
   return (
     <Router>
@@ -33,12 +38,19 @@ function App() {
         <Route
           path="/visit/:id"
           element={
-            <ProtectedRoute allowedRoles={['security']}>
+            <ProtectedRoute allowedRoles={['security', 'admin']}> {/* Allow admin if needed for testing */}
               <VisitDetails />
             </ProtectedRoute>
           }
         />
-        <Route path="/" element={<Navigate to={user ? (user.role === 'admin' ? '/admin' : user.role === 'resident' ? '/dashboard' : '/visit/someid') : '/login'} />} />
+        <Route
+          path="/"
+          element={
+            <ProtectedRoute allowedRoles={['admin', 'resident', 'security']}>
+              <Home />
+            </ProtectedRoute>
+          }
+        />
       </Routes>
     </Router>
   );
