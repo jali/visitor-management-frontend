@@ -24,30 +24,30 @@ const ResidentDashboard = () => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  useEffect(() => {
-    fetchVisits();
-  }, [token]);
+  // useEffect(() => {
+  //   fetchVisits();
+  // }, [token]);
 
-  const fetchVisits = async () => {
-    setIsLoading(true);
-    setError(null);
-    if (!token) {
-      setError('No authentication token found. Please log in again.');
-      setIsLoading(false);
-      return;
-    }
-    try {
-      const res = await axios.get(`${API_BASE_URL}/visit/my-visits`, {
-        headers: { 'x-auth-token': token }
-      });
-      setVisits(res.data);
-    } catch (err) {
-      setError('Failed to fetch visits.');
-      console.error(err);
-    } finally {
-      setIsLoading(false);
-    }
-  };
+  // const fetchVisits = async () => {
+  //   setIsLoading(true);
+  //   setError(null);
+  //   if (!token) {
+  //     setError('No authentication token found. Please log in again.');
+  //     setIsLoading(false);
+  //     return;
+  //   }
+  //   try {
+  //     const res = await axios.get(`${API_BASE_URL}/visit/my-visits`, {
+  //       headers: { 'x-auth-token': token }
+  //     });
+  //     setVisits(res.data);
+  //   } catch (err) {
+  //     setError('Failed to fetch visits.');
+  //     console.error(err);
+  //   } finally {
+  //     setIsLoading(false);
+  //   }
+  // };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -62,11 +62,10 @@ const ResidentDashboard = () => {
       const res = await axios.post(`${API_BASE_URL}/visit`, formData, {
         headers: { 'x-auth-token': token }
       });
-      console.log('received data: ', res.data)
       const url = res.data.url;
       setQrUrl(url);
       
-      fetchVisits();
+      // fetchVisits();
     } catch (err) {
       setError('Failed to create visit. Please try again.');
       console.error(err);
