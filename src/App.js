@@ -38,19 +38,13 @@ function App() {
         <Route
           path="/visit/:id"
           element={
-            <ProtectedRoute allowedRoles={['security', 'admin']}> {/* Allow admin if needed for testing */}
+            <ProtectedRoute allowedRoles={['security', 'admin']}> 
               <VisitDetails />
             </ProtectedRoute>
           }
         />
-        <Route
-          path="/"
-          element={
-            <ProtectedRoute allowedRoles={['admin', 'resident', 'security']}>
-              <Home />
-            </ProtectedRoute>
-          }
-        />
+        <Route path="/" element={user ? (user.role === 'admin' ? <Navigate to="/admin" /> : user.role === 'resident' ? <Navigate to="/dashboard" /> : <div><h2>Welcome, Security User</h2><p>You can access visit details by opening QR links (e.g., /visit/:id).</p></div>) : <Navigate to="/login" />} />
+        
       </Routes>
     </Router>
   );

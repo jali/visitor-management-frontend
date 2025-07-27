@@ -6,7 +6,7 @@ const ProtectedRoute = ({ children, allowedRoles }) => {
   const { user, loading } = useAuth();
 
   if (loading) {
-    return <p>Loading...</p>; // Show loader while auth is initializing
+    return <p>Loading...</p>;
   }
 
   if (!user) {

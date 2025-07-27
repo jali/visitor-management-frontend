@@ -17,7 +17,7 @@ const VisitDetails = () => {
         return;
       }
       try {
-        console.log('Fetching visit details with token:', token); // Debug log
+        console.log('Fetching visit details with token:', token);
         const res = await axios.get(`${API_BASE_URL}/visit/${id}`, {
           headers: { 'x-auth-token': token }
         });
@@ -32,20 +32,21 @@ const VisitDetails = () => {
     fetchVisit();
   }, [id, token]);
 
-  if (error) return <p>{error}</p>;
+  if (error) return <p style={{ color: 'red' }}>{error}</p>;
   if (!visit) return <p>Loading...</p>;
 
   return (
     <div>
       <h2>Visit Details</h2>
+      <p>Visit ID: {visit.visitId}</p>
       <p>Visitor Name: {visit.visitorName}</p>
-      <p>Visit Time: {new Date(visit.visitTime).toLocaleString()}</p> {/* Formatted for readability */}
-      <p>Visit Duration: {visit.visitDuration} hours</p> {/* Assuming hours; adjust unit if needed */}
+      <p>Visit Time: {new Date(visit.visitTime).toLocaleString()}</p>
+      <p>Visit Duration: {visit.visitDuration} hours</p>
       <p>Flat Number: {visit.flatNumber}</p>
       <p>Building Number: {visit.buildingNumber}</p>
-      <p>Car Details: {visit.carDetails}</p>
-      <p>Visit ID: {visit.visitId}</p>
+      <p>Car Details: {visit.carDetails || 'N/A'}</p>
       <p>Resident: {visit.residentId.name}</p>
+      <p>Resident ID: {visit.residentId._id}</p>
     </div>
   );
 };

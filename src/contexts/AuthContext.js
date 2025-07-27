@@ -1,4 +1,3 @@
-
 import React, { createContext, useState, useEffect } from 'react';
 import { jwtDecode } from 'jwt-decode';
 import axios from 'axios';
@@ -12,7 +11,6 @@ export const AuthProvider = ({ children }) => {
     const storedToken = localStorage.getItem('token');
     if (storedToken) {
       try {
-        // Validate token structure on initial load
         jwtDecode(storedToken);
         return storedToken;
       } catch (err) {
@@ -23,7 +21,7 @@ export const AuthProvider = ({ children }) => {
     }
     return null;
   });
-  const [loading, setLoading] = useState(true); // Added loading state
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     if (token) {
@@ -34,10 +32,10 @@ export const AuthProvider = ({ children }) => {
         axios.defaults.headers.common['x-auth-token'] = token;
       } catch (err) {
         console.error('Failed to decode token:', err);
-        logout(); // Clear invalid token
+        logout();
       }
     }
-    setLoading(false); // Set loading false after processing
+    setLoading(false);
   }, [token]);
 
   const login = async (email, password) => {
@@ -69,7 +67,7 @@ export const AuthProvider = ({ children }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ user, token, login, logout }}>
+    <AuthContext.Provider value={{ user, token, login, logout, loading }}>
       {children}
     </AuthContext.Provider>
   );
