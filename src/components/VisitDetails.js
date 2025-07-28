@@ -32,21 +32,23 @@ const VisitDetails = () => {
     fetchVisit();
   }, [id, token]);
 
-  if (error) return <p style={{ color: 'red' }}>{error}</p>;
-  if (!visit) return <p>Loading...</p>;
+  if (error) return <div className="visit-details-container"><p className="visit-details-error">{error}</p></div>;
+  if (!visit) return <div className="visit-details-container"><p className="visit-details-loading">Loading...</p></div>;
 
   return (
-    <div>
-      <h2>Visit Details</h2>
-      <p>Visit ID: {visit.visitId}</p>
-      <p>Visitor Name: {visit.visitorName}</p>
-      <p>Visit Time: {new Date(visit.visitTime).toLocaleString()}</p>
-      <p>Visit Duration: {visit.visitDuration} hours</p>
-      <p>Flat Number: {visit.flatNumber}</p>
-      <p>Building Number: {visit.buildingNumber}</p>
-      <p>Car Details: {visit.carDetails || 'N/A'}</p>
-      <p>Resident: {visit.residentId.name}</p>
-      <p>Resident ID: {visit.residentId._id}</p>
+    <div className="visit-details-container">
+      <div className="visit-details-card">
+        <h2>Visit Details</h2>
+        <p className="visit-details-item"><span className="visit-details-label">Visit ID:</span> {visit.visitId}</p>
+        <p className="visit-details-item"><span className="visit-details-label">Visitor Name:</span> {visit.visitorName}</p>
+        <p className="visit-details-item"><span className="visit-details-label">Visit Time:</span> {new Date(visit.visitTime).toLocaleString()}</p>
+        <p className="visit-details-item"><span className="visit-details-label">Visit Duration:</span> {visit.visitDuration} hours</p>
+        <p className="visit-details-item"><span className="visit-details-label">Flat Number:</span> {visit.flatNumber}</p>
+        <p className="visit-details-item"><span className="visit-details-label">Building Number:</span> {visit.buildingNumber}</p>
+        <p className="visit-details-item"><span className="visit-details-label">Car Details:</span> {visit.carDetails || 'N/A'}</p>
+        <p className="visit-details-item"><span className="visit-details-label">Resident:</span> {visit.residentId.name}</p>
+        {/* <p className="visit-details-item"><span className="visit-details-label">Resident ID:</span> {visit.residentId._id}</p> */}
+      </div>
     </div>
   );
 };

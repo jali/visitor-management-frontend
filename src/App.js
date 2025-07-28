@@ -6,17 +6,23 @@ import ResidentDashboard from './components/ResidentDashboard';
 import VisitDetails from './components/VisitDetails';
 import ProtectedRoute from './components/ProtectedRoute';
 import SecurityHome from './components/SecurityHome';
+import Navbar from './components/Navbar';
 import { useAuth } from './contexts/AuthContext';
+import './App.css'; 
 
 function App() {
   const { user, loading } = useAuth();
 
   if (loading) {
-    return <div>Loading...</div>; // Prevent render until auth is ready
+    return (
+      <div className="loading-container">
+        <div className="loading-spinner"></div>
+      </div>
+    );
   }
-
   return (
     <Router>
+      <Navbar />
       <Routes>
         <Route path="/login" element={<Login />} />
         <Route

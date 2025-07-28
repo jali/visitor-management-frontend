@@ -3,11 +3,10 @@ import axios from 'axios';
 import { QRCodeCanvas } from 'qrcode.react';
 import { v4 as uuidv4 } from 'uuid';
 import { API_BASE_URL } from '../constants';
-import { useAuth } from '../contexts/AuthContext'; // Added import
+import { useAuth } from '../contexts/AuthContext';
 
 const ResidentDashboard = () => {
   const { token } = useAuth(); // Use token from context state
-  const [visits, setVisits] = useState([]);
   const [formData, setFormData] = useState({
     visitorName: '',
     visitTime: '',
@@ -24,31 +23,6 @@ const ResidentDashboard = () => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  // useEffect(() => {
-  //   fetchVisits();
-  // }, [token]);
-
-  // const fetchVisits = async () => {
-  //   setIsLoading(true);
-  //   setError(null);
-  //   if (!token) {
-  //     setError('No authentication token found. Please log in again.');
-  //     setIsLoading(false);
-  //     return;
-  //   }
-  //   try {
-  //     const res = await axios.get(`${API_BASE_URL}/visit/my-visits`, {
-  //       headers: { 'x-auth-token': token }
-  //     });
-  //     setVisits(res.data);
-  //   } catch (err) {
-  //     setError('Failed to fetch visits.');
-  //     console.error(err);
-  //   } finally {
-  //     setIsLoading(false);
-  //   }
-  // };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
@@ -62,10 +36,16 @@ const ResidentDashboard = () => {
       const res = await axios.post(`${API_BASE_URL}/visit`, formData, {
         headers: { 'x-auth-token': token }
       });
+      console.log('received data: ', res.data)
       const url = res.data.url;
       setQrUrl(url);
-      
-      // fetchVisits();
+      setFormData({
+        visitorName: '',
+        visitTime: '',
+        visitDuration: '',
+        carDetails: '',
+        visitId: uuidv4(),
+      });
     } catch (err) {
       setError('Failed to create visit. Please try again.');
       console.error(err);
@@ -81,54 +61,53 @@ const ResidentDashboard = () => {
   }, [qrUrl, qrRef]);
 
   return (
-    <div>
-      <h2>Resident Dashboard</h2>
-      {error && <p style={{ color: 'red' }}>{error}</p>}
-      {isLoading && <p>Loading...</p>}
-      <form onSubmit={handleSubmit}>
-        <input
-          name="visitorName"
-          type="text"
-          value={formData.visitorName}
-          onChange={handleChange}
-          placeholder="Visitor Name"
-          required
-        />
-        <input
-          name="visitTime"
-          type="datetime-local"
-          value={formData.visitTime}
-          onChange={handleChange}
-          required
-        />
-        <input
-          name="visitDuration"
-          type="text"
-          value={formData.visitDuration}
-          onChange={handleChange}
-          placeholder="Visit Duration (e.g., 2 hours)"
-          required
-        />
-        <input
-          name="carDetails"
-          type="text"
-          value={formData.carDetails}
-          onChange={handleChange}
-          placeholder="Car Details"
-        />
-        <button type="submit" disabled={isLoading}>
-          {isLoading ? 'Creating...' : 'Create Visit'}
-        </button>
-      </form>
-      <ul>
-        {visits.map((visit) => (
-          <li key={visit.visitId || visit._id}>
-            {visit.visitorName} - {visit.visitTime}
-          </li>
-        ))}
-      </ul>
+    <div className="dashboard-container">
+      <div className="dashboard-form">
+        <h2>Resident Dashboard</h2>
+        {error && <p className="dashboard-error">{error}</p>}
+        {isLoading && <p>Loading...</p>}
+        <form onSubmit={handleSubmit}>
+          <input
+            name="visitorName"
+            type="text"
+            value={formData.visitorName}
+            onChange={handleChange}
+            placeholder="Visitor Name"
+            required
+            className="dashboard-input"
+          />
+          <input
+            name="visitTime"
+            type="datetime-local"
+            value={formData.visitTime}
+            onChange={handleChange}
+            required
+            className="dashboard-input"
+          />
+          <input
+            name="visitDuration"
+            type="text"
+            value={formData.visitDuration}
+            onChange={handleChange}
+            placeholder="Visit Duration (e.g., 2 hours)"
+            required
+            className="dashboard-input"
+          />
+          <input
+            name="carDetails"
+            type="text"
+            value={formData.carDetails}
+            onChange={handleChange}
+            placeholder="Car Details"
+            className="dashboard-input"
+          />
+          <button type="submit" disabled={isLoading} className="dashboard-button">
+            {isLoading ? 'Creating...' : 'Create Visit'}
+          </button>
+        </form>
+      </div>
       {qrUrl && (
-        <div ref={qrRef}>
+        <div ref={qrRef} className="dashboard-qr-container">
           <h3>QR Code for Visit</h3>
           <QRCodeCanvas value={qrUrl} size={256} />
         </div>
