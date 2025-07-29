@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState } from 'react';
 import axios from 'axios';
 import { QRCodeCanvas } from 'qrcode.react';
 import { v4 as uuidv4 } from 'uuid';
@@ -17,7 +17,6 @@ const ResidentDashboard = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
   const [qrUrl, setQrUrl] = useState('');
-  const qrRef = useRef(null);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -54,14 +53,15 @@ const ResidentDashboard = () => {
     }
   };
 
-  useEffect(() => {
-    if (qrUrl && qrRef.current) {
-      qrRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    }
-  }, [qrUrl, qrRef]);
 
   return (
     <div className="dashboard-container">
+      {qrUrl && (
+        <div className="dashboard-qr-container">
+          <h3>QR Code for Visit</h3>
+          <QRCodeCanvas value={qrUrl} size={256} />
+        </div>
+      )}
       <div className="dashboard-form">
         <h2>Resident Dashboard</h2>
         {error && <p className="dashboard-error">{error}</p>}
@@ -106,12 +106,6 @@ const ResidentDashboard = () => {
           </button>
         </form>
       </div>
-      {qrUrl && (
-        <div ref={qrRef} className="dashboard-qr-container">
-          <h3>QR Code for Visit</h3>
-          <QRCodeCanvas value={qrUrl} size={256} />
-        </div>
-      )}
     </div>
   );
 };

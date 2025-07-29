@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 
 const Login = () => {
@@ -8,14 +8,14 @@ const Login = () => {
   const [error, setError] = useState('');
   const { login } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation(); // Get location for state.from
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       const role = await login(email, password);
-      if (role === 'admin') navigate('/admin');
-      else if (role === 'resident') navigate('/dashboard');
-      else if (role === 'security') navigate('/'); 
+      const redirectTo = location.state?.from || (role === 'admin' ? '/admin' : role === 'resident' ? '/dashboard' : '/');
+      navigate(redirectTo, { replace: true });
     } catch (err) {
       setError('Invalid credentials');
     }

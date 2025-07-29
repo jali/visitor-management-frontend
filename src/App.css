@@ -145,7 +145,7 @@
 
 .dashboard-qr-container {
   text-align: center;
-  margin-top: 20px;
+  padding: 20px;
 }
 
 .dashboard-qr-container h3 {
@@ -233,4 +233,15 @@
 .security-home-instructions {
   font-style: italic;
   color: #6c757d;
+}
+/* Existing styles remain, add these at the bottom */
+.invalid-time {
+  border: 2px solid #dc3545; /* Red border to highlight invalid state */
+  background-color: #fff3f3; /* Light red background */
+}
+
+.invalid-field {
+  background-color: #ffebee; /* Very light red background for invalid fields */
+  border-left: 4px solid #dc3545; /* Red indicator on left */
+  padding-left: 10px;
 }

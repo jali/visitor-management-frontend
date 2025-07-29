@@ -9,6 +9,7 @@ const VisitDetails = () => {
   const { id } = useParams();
   const [visit, setVisit] = useState(null);
   const [error, setError] = useState('');
+  const [isInvalidTime, setIsInvalidTime] = useState(false);
 
   useEffect(() => {
     const fetchVisit = async () => {
@@ -21,7 +22,17 @@ const VisitDetails = () => {
         const res = await axios.get(`${API_BASE_URL}/visit/${id}`, {
           headers: { 'x-auth-token': token }
         });
-        setVisit(res.data);
+        const data = res.data;
+        setVisit(data);
+
+        if(data) {
+          // Check if visit time + duration exceeds current time
+          const visitEndTime = new Date(data.visitTime);
+          const duration = Number(data.visitDuration);
+          visitEndTime.setUTCHours(visitEndTime.getUTCHours() + duration);
+          const currentTime = new Date();
+          setIsInvalidTime(visitEndTime < currentTime);
+        }
       } catch (err) {
         const errorMessage = err.response?.data?.info || err.message || 'Failed to fetch visit details';
         setError(errorMessage);
@@ -37,17 +48,33 @@ const VisitDetails = () => {
 
   return (
     <div className="visit-details-container">
-      <div className="visit-details-card">
+      {isInvalidTime && <p className="visit-details-error">Invalid Access: Expired Invitation!<br/> انتهت صلاحية الزيارة. يرجى التواصل مع الساكن للحصول على دعوة جديدة</p>}
+      <div className={`visit-details-card ${isInvalidTime ? 'invalid-time' : ''}`}>
         <h2>Visit Details</h2>
-        <p className="visit-details-item"><span className="visit-details-label">Visit ID:</span> {visit.visitId}</p>
-        <p className="visit-details-item"><span className="visit-details-label">Visitor Name:</span> {visit.visitorName}</p>
-        <p className="visit-details-item"><span className="visit-details-label">Visit Time:</span> {new Date(visit.visitTime).toLocaleString()}</p>
-        <p className="visit-details-item"><span className="visit-details-label">Visit Duration:</span> {visit.visitDuration} hours</p>
-        <p className="visit-details-item"><span className="visit-details-label">Flat Number:</span> {visit.flatNumber}</p>
-        <p className="visit-details-item"><span className="visit-details-label">Building Number:</span> {visit.buildingNumber}</p>
-        <p className="visit-details-item"><span className="visit-details-label">Car Details:</span> {visit.carDetails || 'N/A'}</p>
-        <p className="visit-details-item"><span className="visit-details-label">Resident:</span> {visit.residentId.name}</p>
-        {/* <p className="visit-details-item"><span className="visit-details-label">Resident ID:</span> {visit.residentId._id}</p> */}
+        <p className={`visit-details-item ${isInvalidTime && (visit.visitTime || visit.visitDuration) ? 'invalid-field' : ''}`}>
+          <span className="visit-details-label">Visit ID:</span> {visit.visitId}
+        </p>
+        <p className="visit-details-item">
+          <span className="visit-details-label">Visitor Name:</span> {visit.visitorName}
+        </p>
+        <p className={`visit-details-item ${isInvalidTime && visit.visitTime ? 'invalid-field' : ''}`}>
+          <span className="visit-details-label">Visit Time:</span> {new Date(visit.visitTime).toLocaleString()}
+        </p>
+        <p className={`visit-details-item ${isInvalidTime && visit.visitDuration ? 'invalid-field' : ''}`}>
+          <span className="visit-details-label">Visit Duration:</span> {visit.visitDuration} hours
+        </p>
+        <p className="visit-details-item">
+          <span className="visit-details-label">Flat Number:</span> {visit.flatNumber}
+        </p>
+        <p className="visit-details-item">
+          <span className="visit-details-label">Building Number:</span> {visit.buildingNumber}
+        </p>
+        <p className="visit-details-item">
+          <span className="visit-details-label">Car Details:</span> {visit.carDetails || 'N/A'}
+        </p>
+        <p className="visit-details-item">
+          <span className="visit-details-label">Resident:</span> {visit.residentId.name}
+        </p>
       </div>
     </div>
   );

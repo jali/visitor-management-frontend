@@ -15,7 +15,7 @@ const Navbar = () => {
       alignItems: 'center',
       color: 'white'
     }}>
-      <h1 style={{ margin: 0 }}>abqa</h1>
+      <h1 style={{ margin: 0 }}>هلاوين</h1>
       <div>
         {user ? (
           <>
