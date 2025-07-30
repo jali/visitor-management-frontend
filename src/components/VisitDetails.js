@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import axios from 'axios';
-import { API_BASE_URL } from '../constants';
+import api from '../api';
 import { useAuth } from '../contexts/AuthContext';
 
 const VisitDetails = () => {
@@ -19,9 +18,7 @@ const VisitDetails = () => {
       }
       try {
         console.log('Fetching visit details with token:', token);
-        const res = await axios.get(`${API_BASE_URL}/visit/${id}`, {
-          headers: { 'x-auth-token': token }
-        });
+        const res = await api.get(`/visit/${id}`);
         const data = res.data;
         setVisit(data);
 

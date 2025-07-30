@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
-import axios from 'axios';
 import { QRCodeCanvas } from 'qrcode.react';
 import { v4 as uuidv4 } from 'uuid';
-import { API_BASE_URL } from '../constants';
+import api from '../api';
 import { useAuth } from '../contexts/AuthContext';
 
 const ResidentDashboard = () => {
@@ -32,10 +31,7 @@ const ResidentDashboard = () => {
       return;
     }
     try {
-      const res = await axios.post(`${API_BASE_URL}/visit`, formData, {
-        headers: { 'x-auth-token': token }
-      });
-      console.log('received data: ', res.data)
+      const res = await api.post('/visit', formData);
       const url = res.data.url;
       setQrUrl(url);
       setFormData({
@@ -52,7 +48,6 @@ const ResidentDashboard = () => {
       setIsLoading(false);
     }
   };
-
 
   return (
     <div className="dashboard-container">

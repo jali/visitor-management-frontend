@@ -1,7 +1,6 @@
 import React, { createContext, useState, useEffect } from 'react';
 import { jwtDecode } from 'jwt-decode';
-import axios from 'axios';
-import { API_BASE_URL } from '../constants';
+import api from '../api';
 
 const AuthContext = createContext();
 
@@ -29,7 +28,6 @@ export const AuthProvider = ({ children }) => {
         const decoded = jwtDecode(token);
         const userData = { id: decoded._id, name: decoded.name, role: decoded.role };
         setUser(userData);
-        axios.defaults.headers.common['x-auth-token'] = token;
       } catch (err) {
         console.error('Failed to decode token:', err);
         logout();
@@ -40,7 +38,7 @@ export const AuthProvider = ({ children }) => {
 
   const login = async (email, password) => {
     try {
-      const res = await axios.post(`${API_BASE_URL}/auth/login`, { email, password });
+      const res = await api.post('/auth/login', { email, password });
       const token = res.data.token;
       try {
         const decoded = jwtDecode(token);
@@ -50,6 +48,7 @@ export const AuthProvider = ({ children }) => {
         setUser(userData);
         return userData.role;
       } catch (decodeErr) {
+        
         console.error('Failed to decode new token:', decodeErr);
         throw new Error('Invalid token received from server');
       }
@@ -63,7 +62,7 @@ export const AuthProvider = ({ children }) => {
     localStorage.removeItem('token');
     setToken(null);
     setUser(null);
-    delete axios.defaults.headers.common['x-auth-token'];
+    // delete axios.defaults.headers.common['x-auth-token'];
   };
 
   return (
