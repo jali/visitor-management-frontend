@@ -1,10 +1,28 @@
-import React from 'react';
-import { Navigate, useLocation } from 'react-router-dom';
+import React, { useEffect } from 'react';
+import { Navigate, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
+import api from '../api';
 
 const ProtectedRoute = ({ children, allowedRoles }) => {
   const { user, loading } = useAuth();
+  const navigate = useNavigate();
   const location = useLocation(); // Get current location
+
+  useEffect(() => {
+    const validate = async () => {
+      const token = localStorage.getItem('token');
+      if (!token) {
+        navigate('/login');
+        return;
+      }
+      try {
+        await api.get('/visit'); // Validates token; 401 triggers interceptor redirect
+      } catch (err) {
+        console.error('Validation error:', err);
+      }
+    };
+    validate();
+  }, [navigate]);
 
   if (loading) {
     return (
