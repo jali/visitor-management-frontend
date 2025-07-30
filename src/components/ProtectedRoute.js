@@ -12,7 +12,7 @@ const ProtectedRoute = ({ children, allowedRoles }) => {
     const validate = async () => {
       const token = localStorage.getItem('token');
       if (!token) {
-        navigate('/login');
+        navigate('/login', { state: { from: location.pathname } });
         return;
       }
       try {
@@ -22,7 +22,7 @@ const ProtectedRoute = ({ children, allowedRoles }) => {
       }
     };
     validate();
-  }, [navigate]);
+  }, [navigate, location.pathname]);
 
   if (loading) {
     return (
