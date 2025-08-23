@@ -1,1 +1,1 @@
-export const API_BASE_URL = process.env.NODE_ENV === 'production' ? 'https://abqa.net/api' : 'http://192.168.1.188:8080/api';
+export const API_BASE_URL = process.env.NODE_ENV === 'production' ? 'https://abqa.net/api' : 'http://127.0.0.1:8080/api';
